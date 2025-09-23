@@ -1,0 +1,1 @@
+export const BUSQUEDA_TAGS_URL = "http://localhost:16000";
