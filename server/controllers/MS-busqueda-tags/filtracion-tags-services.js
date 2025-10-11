@@ -16,3 +16,8 @@ export async function getEtiquetasPorGrupo(id_grupo) {
     const response = await axios.get(`${BUSQUEDA_TAGS_URL}/busqueda-tags/filtracion/listarEtiquetasDinamico/${id_grupo}`)
     return response.data.data;
 }
+
+export async function getListarTags() {
+    const response = await axios.get(`${BUSQUEDA_TAGS_URL}/busqueda-tags/filtracion/listarTags`)
+    return response.data.data;
+}
