@@ -9,11 +9,16 @@ export async function getPostId(id_post) {
 
 export async function getGrupos() {
     const response = await axios.get(`${BUSQUEDA_TAGS_URL}/busqueda-tags/filtracion/listarGruposTags`)
-    return response.data.grupos;
+    return response.data;
 }
 
 export async function getEtiquetasPorGrupo(id_grupo) {
     const response = await axios.get(`${BUSQUEDA_TAGS_URL}/busqueda-tags/filtracion/listarEtiquetasDinamico/${id_grupo}`)
+    return response.data.data;
+}
+
+export async function getPostsPorGrupo(id_grupo) {
+    const response = await axios.get(`${BUSQUEDA_TAGS_URL}/busqueda-tags/filtracion/listarPostsPorGrupo/${id_grupo}`)
     return response.data.data;
 }
 
