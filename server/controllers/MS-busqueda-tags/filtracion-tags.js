@@ -1,4 +1,4 @@
-import { getGrupos, getPostId, getEtiquetasPorGrupo, getListarTags, getPostsPorGrupo } from "./filtracion-tags-services.js";
+import { getGrupos, getPostId, getEtiquetasPorGrupo, getListarTags, getPostsPorGrupo, getPostsPorTag } from "./filtracion-tags-services.js";
 
 export const holaMundo = async (req, res) => {
     try {
@@ -77,6 +77,27 @@ export const listarTags = async (req, res) => {
     try {
         const tags = await getListarTags();
         return res.status(200).send({message: "OK!!!", data: tags})
+    } catch (err) {
+        console.log("error", err);
+        return res.status(500).json({
+            message: "Ha ocurrido un error al llamar al microservicio",
+        });
+    }
+}
+
+export const listarPostsPorTag = async (req, res) => {
+    try {
+        const {excluirGruposId = ""} = req.body;
+        const tags = await getListarTags(excluirGruposId);
+
+        const resp = [];
+
+        for (const tag of tags) {
+            const posts = await getPostsPorTag(tag.ID);
+            resp.push({ ...tag, posts });
+        }
+
+        return res.status(200).send({message: "OK!!!", data: resp})
     } catch (err) {
         console.log("error", err);
         return res.status(500).json({
