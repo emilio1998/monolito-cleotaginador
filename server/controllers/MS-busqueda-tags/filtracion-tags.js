@@ -92,6 +92,8 @@ export const listarPostsPorTag = async (req, res) => {
 
         const resp = [];
 
+        resp.push({ID: 0, title: "TODOS LOS POSTS", color: "#000000", posts: await getPostsPorTag(0)});
+
         for (const tag of tags) {
             const posts = await getPostsPorTag(tag.ID);
             resp.push({ ...tag, posts });
