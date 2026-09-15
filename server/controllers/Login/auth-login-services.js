@@ -31,3 +31,10 @@ export async function autenticar(username, password) {
     );
     return response.data;
 }
+
+export async function desautenticar() {
+    const response = await requestWithRetry(() =>
+        httpClient.get("/cleologin/api/v1/auth/logout")
+    );
+    return response.data;
+}

@@ -1,4 +1,4 @@
-import { autenticar } from './auth-login-services.js';
+import { autenticar, desautenticar } from './auth-login-services.js';
 
 export const verificarLogin = async (req, res) => {
 
@@ -13,6 +13,25 @@ export const verificarLogin = async (req, res) => {
 
         const resp = authResponse.Respuesta
         const status = authResponse.status;
+
+        return res.status(status).json(resp);
+    } catch (err) {
+        const errorResponse = err.response.data;
+
+        return res.status(err.status).json({
+            message: err.message,
+            error: errorResponse.Respuesta,
+            status: err.status
+        });
+    }
+}
+
+export const cerrarSesion = async (req, res) => {
+    try {
+        const logoutResponse = await desautenticar();
+
+        const resp = logoutResponse.Respuesta;
+        const status = logoutResponse.status;
 
         return res.status(status).json(resp);
     } catch (err) {
