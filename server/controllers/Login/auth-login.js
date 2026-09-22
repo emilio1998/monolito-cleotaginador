@@ -65,6 +65,10 @@ export const verificarLogin = async (req, res) => {
     }
 }
 
+export const sigueSesion = async (req, res) => {
+    return res.status(200).json({ message: "Sigue la sesión activa" });
+}
+
 export const cerrarSesion = async (req, res) => {
     try {
         const logoutResponse = await desautenticar();
@@ -74,6 +78,15 @@ export const cerrarSesion = async (req, res) => {
 
         return res.status(status).json(resp);
     } catch (err) {
+
+        if (!err.response) {
+            return res.status(500).json({
+                message: err.message,
+                error: err.stack,
+                status: 500
+            });
+        }
+
         const errorResponse = err.response.data;
 
         return res.status(err.status).json({

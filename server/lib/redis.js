@@ -1,4 +1,5 @@
 import { createClientPool } from 'redis';
+import { ENTORNO } from './config.js';
 
 // Create a pool of connections
 // export const pool = await createClientPool({
@@ -34,5 +35,9 @@ try {
   // app.listen(3000);
 } catch (error) {
   console.error("No se pudo conectar a Redis. Revisa la configuración:", error);
-  process.exit(1); // Cerramos la app porque Redis es indispensable
+  if (ENTORNO === 'DEV') {
+      console.error("Modo DEV: Continuando a pesar del fallo de Redis.");
+  } else {
+      process.exit(1); // Cerramos la app porque Redis es indispensable
+  }
 }
