@@ -1,4 +1,5 @@
-import { getGrupos, getPostId, getEtiquetasPorGrupo, getListarTags, getPostsPorGrupo, getPostsPorTag } from "./filtracion-tags-services.js";
+import { getGrupos, getPostId, getEtiquetasPorGrupo, 
+    getListarTags, getPostsPorGrupo, getPostsPorTag, getImagenesPorPost } from "./filtracion-tags-services.js";
 
 export const holaMundo = async (req, res) => {
     try {
@@ -100,6 +101,19 @@ export const listarPostsPorTag = async (req, res) => {
         }
 
         return res.status(200).send({message: "OK!!!", data: resp})
+    } catch (err) {
+        console.log("error", err);
+        return res.status(500).json({
+            message: "Ha ocurrido un error al llamar al microservicio",
+        });
+    }
+}
+
+export const listarImagenesPorPost = async (req, res) => {
+    try {
+        const { UNICO_ARCHIVO, DATOS_ARCHIVO } = req.body;
+        const imagenes = await getImagenesPorPost(UNICO_ARCHIVO, DATOS_ARCHIVO);
+        return res.status(200).send({message: "OK!!!", data: imagenes})
     } catch (err) {
         console.log("error", err);
         return res.status(500).json({

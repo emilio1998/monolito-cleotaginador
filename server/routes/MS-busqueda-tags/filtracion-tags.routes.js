@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { holaMundo, filtracionPorPost, listarGruposEtiquetas, listarTags, listarPostsPorGrupo, listarPostsPorTag } from "../../controllers/MS-busqueda-tags/filtracion-tags.js";
+import { holaMundo, filtracionPorPost, listarGruposEtiquetas, listarTags, listarPostsPorGrupo, listarPostsPorTag, listarImagenesPorPost } from "../../controllers/MS-busqueda-tags/filtracion-tags.js";
 
 const filtracion_tags_routes = Router();
 
@@ -10,5 +10,6 @@ filtracion_tags_routes.get("/listarGruposEtiquetas", listarGruposEtiquetas);
 filtracion_tags_routes.get("/listarTags", listarTags);
 filtracion_tags_routes.get("/listarPostsPorGrupo", listarPostsPorGrupo);
 filtracion_tags_routes.post("/listarPostsPorTag", listarPostsPorTag);
+filtracion_tags_routes.post("/listarImagenesPorPost", listarImagenesPorPost);
 
 export default filtracion_tags_routes;

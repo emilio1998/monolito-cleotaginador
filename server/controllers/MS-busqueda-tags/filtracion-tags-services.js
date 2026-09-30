@@ -61,6 +61,13 @@ export async function getPostsPorTag(id_tag) {
     return response.data.data;
 }
 
+export async function getImagenesPorPost(unicoArchivo, datosArchivo) {
+    const response = await requestWithRetry(() =>
+        httpClient.post(`/busqueda-tags/filtracion/listarImagenesPorPosts`, { UNICO_ARCHIVO: unicoArchivo, DATOS_ARCHIVO: datosArchivo })
+    );
+    return response.data.data;
+}
+
 export async function getListarTags(excluirGruposId = "") {
     const response = await requestWithRetry(() =>
         httpClient.post("/busqueda-tags/filtracion/listarTags", { excluirGrupos: excluirGruposId })

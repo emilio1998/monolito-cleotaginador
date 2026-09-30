@@ -4,6 +4,9 @@ import { REPOSITORIO_ARCHIVOS } from '../../lib/config.js';
 import sizeOf from 'image-size';
 import fs from 'node:fs';
 
+const EXTENSIONES_IMAGENES = ['jpg', 'jpeg', 'png', 'gif'];
+const EXTENSIONES_VIDEOS = ['mp4', 'mov', 'avi', 'mkv'];
+
 export const listarPosts = async (req, res) => {
     try {
         const urlRepo = join(REPOSITORIO_ARCHIVOS, 'posts');
@@ -13,7 +16,7 @@ export const listarPosts = async (req, res) => {
             .map((entrada) => entrada.name);
 
         const imagenes = [];
-        for (const carpeta of carpetas) {
+        for (const [index, carpeta] of carpetas.entries()) {
             const urlCarpeta = join(urlRepo, carpeta);
             const urlImagenes = join(urlCarpeta, 'Imagenes');
             const archivos = await readdir(urlImagenes, { withFileTypes: true });
@@ -22,6 +25,8 @@ export const listarPosts = async (req, res) => {
                 .map((archivo) => archivo.name);
 
             const datosImagenes = []
+            let cantidadImagenes = 0;
+            let cantidadVideos = 0;
             for (const imagen of imagenesCarpeta) {
                 const urlImagen = join(urlImagenes, imagen);
                 const archivoBuffer = fs.readFileSync(urlImagen);
@@ -29,6 +34,12 @@ export const listarPosts = async (req, res) => {
 
                 const extension = imagen.split('.').pop();
                 const base64Data = archivoBuffer.toString('base64');
+
+                if (EXTENSIONES_IMAGENES.includes(extension.toLowerCase())) {
+                    cantidadImagenes++;
+                } else if (EXTENSIONES_VIDEOS.includes(extension.toLowerCase())) {
+                    cantidadVideos++;
+                }
 
                 const srcBase64 = `data:image/${extension};base64,${base64Data}`;
 
@@ -40,7 +51,8 @@ export const listarPosts = async (req, res) => {
 
             imagenes.push({ carpeta, 
                 imagenes: datosImagenes, imagenPrincipal: datosImagenes[0],
-                imagenesDestacadas: datosImagenes.slice(0, 7) });
+                imagenesDestacadas: datosImagenes.slice(0, 7),
+                titulo: `umekoj0910_V${index + 1}`, fotos: cantidadImagenes, videos: cantidadVideos });
         }
 
         return res.status(200).json({ message: 'OK!!!', data: imagenes });
