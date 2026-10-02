@@ -1,4 +1,4 @@
-import { createClientPool } from 'redis';
+import { createClient } from 'redis';
 import { ENTORNO } from './config.js';
 
 // Create a pool of connections
@@ -8,14 +8,13 @@ import { ENTORNO } from './config.js';
 // .on('error', (err) => console.error('Redis Pool Error', err))
 // .connect();
 
+const client0 = createClient({ url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}/0` });
+const client1 = createClient({ url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}/1` });
+
 export const pool = {
-    db0: createClientPool({
-        url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}/0`
-    }),
-    db1: createClientPool({
-        url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}/1`
-    })
-}
+    db0: client0.createPool(),
+    db1: client1.createPool()
+};
 
 // Función para conectar todos los pools al arrancar el monolito
 export async function connectAllRedisPools() {
