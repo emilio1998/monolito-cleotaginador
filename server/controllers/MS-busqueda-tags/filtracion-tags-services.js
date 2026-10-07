@@ -74,3 +74,10 @@ export async function getListarTags(excluirGruposId = "") {
     );
     return response.data.data;
 }
+
+export async function getListarTagsPorPost(id_post) {
+    const response = await requestWithRetry(() =>
+        httpClient.get(`/busqueda-tags/filtracion/listarTagsPorPost/${id_post}`)
+    );
+    return response.data.data;
+}

@@ -1,5 +1,5 @@
 import { getGrupos, getPostId, getEtiquetasPorGrupo, 
-    getListarTags, getPostsPorGrupo, getPostsPorTag, getImagenesPorPost } from "./filtracion-tags-services.js";
+    getListarTags, getPostsPorGrupo, getPostsPorTag, getImagenesPorPost, getListarTagsPorPost } from "./filtracion-tags-services.js";
 
 export const holaMundo = async (req, res) => {
     try {
@@ -111,9 +111,10 @@ export const listarPostsPorTag = async (req, res) => {
 
 export const listarImagenesPorPost = async (req, res) => {
     try {
-        const { UNICO_ARCHIVO, DATOS_ARCHIVO } = req.body;
+        const { UNICO_ARCHIVO, DATOS_ARCHIVO, ID_POST } = req.body;
         const imagenes = await getImagenesPorPost(UNICO_ARCHIVO, DATOS_ARCHIVO);
-        return res.status(200).send({message: "OK!!!", data: imagenes})
+        const tags = await getListarTagsPorPost(ID_POST);
+        return res.status(200).send({message: "OK!!!", data: imagenes, dataTags: tags})
     } catch (err) {
         console.log("error", err);
         return res.status(500).json({
