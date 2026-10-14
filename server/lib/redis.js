@@ -1,15 +1,57 @@
 import { createClient } from 'redis';
 import { ENTORNO } from './config.js';
 
-// Create a pool of connections
-// export const pool = await createClientPool({
-//   url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`
-// })
-// .on('error', (err) => console.error('Redis Pool Error', err))
-// .connect();
+// Configuración de Redis con opciones de reconexión y keep-alive
+const redisConfig = {
+  socket: {
+    // Keep-alive del socket cada 30 segundos para evitar desconexiones por timeout
+    keepAlive: 30000,
+    // Timeout de socket a 5 minutos (evita desconexiones prematuras)
+    connectTimeout: 300000,
+    // Reconnect strategy: intenta reconectar con backoff exponencial
+    reconnectStrategy: (retries) => {
+      if (retries > 10) {
+        console.error('❌ Redis: Se alcanzó el máximo de reintentos de reconexión');
+        return new Error('Max reconnection attempts reached');
+      }
+      // Espera progresiva: 100ms, 200ms, 400ms... hasta 5 segundos
+      return Math.min(retries * 100, 5000);
+    }
+  },
+  // Timeout de comando
+  commandsQueueBehaviour: 'auto'
+};
 
-const client0 = createClient({ url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}/0` });
-const client1 = createClient({ url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}/1` });
+const client0 = createClient({ 
+  url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}/0`,
+  ...redisConfig
+});
+
+const client1 = createClient({ 
+  url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}/1`,
+  ...redisConfig
+});
+
+// Manejadores de eventos para ambos clientes
+[client0, client1].forEach((client, index) => {
+  const dbName = index === 0 ? 'db0' : 'db1';
+  
+  client.on('error', (err) => {
+    console.error(`❌ Redis ${dbName} Error:`, err.message);
+  });
+  
+  client.on('connect', () => {
+    console.log(`✅ Redis ${dbName} conectado`);
+  });
+  
+  client.on('reconnecting', () => {
+    console.warn(`🔄 Redis ${dbName} intentando reconectar...`);
+  });
+  
+  client.on('ready', () => {
+    console.log(`✅ Redis ${dbName} listo para comandos`);
+  });
+});
 
 export const pool = {
     db0: client0.createPool(),
