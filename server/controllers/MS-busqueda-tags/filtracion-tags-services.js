@@ -3,7 +3,7 @@ import { BUSQUEDA_TAGS_URL } from "../../lib/services/serviciosURL.js";
 
 const httpClient = axios.create({
     baseURL: BUSQUEDA_TAGS_URL,
-    timeout: 10000,
+    timeout: 30000,
 });
 
 async function requestWithRetry(requestFn, retries = 2) {
