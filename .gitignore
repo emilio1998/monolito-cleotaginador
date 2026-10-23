@@ -14,7 +14,7 @@ yarn-error.log*
 /logs
 
 # dotenv environment variable files
-.env
+.env*
 logs*.json
 .tmp
 logs
